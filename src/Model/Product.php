@@ -27,4 +27,27 @@ final class Product
     public function name(): string { return $this->name; }
     public function price(): float { return $this->price; }
     public function categoryId(): int { return $this->categoryId; }
+    public function isAvailable(): bool
+    {
+        return $this->active;
+    }
+
+    public function belongsTo(int $categoryId): bool
+    {
+        return $this->categoryId === $categoryId;
+    }
+
+    public function priceWithDiscount(float $percent): float
+    {
+        if ($percent < 0 || $percent > 100) {
+            throw new InvalidArgumentException('Скидка должна быть в диапазоне от 0 до 100');
+        }
+        return round($this->price * (1 - $percent / 100), 2);
+    }
+
+    public function formattedPrice(?float $value = null): string
+    {
+        return number_format($value ?? $this->price, 2, ',', ' ') . ' ₽';
+    }
+
 }
